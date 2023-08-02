@@ -105,7 +105,7 @@ footer {
   display: inline-block;
 }
 
-..delete-btn {
+.delete-btn {
   color: #b90303;
 }
 .edit-btn {

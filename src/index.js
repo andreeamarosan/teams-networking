@@ -50,22 +50,19 @@ function getTeamAsHTML(team) {
 }
 
 function getTeamAsHTMLInputs(team) {
+  const url = team.url;
+  const displayUrl = url.startsWith("https://github.com/") ? url.substring(19) : url;
   return `<tr>
     <td>
-      <input value="${team.promotion}" type="text" name="promotion" placeholder="Enter Promotion" required/>
+    <td>${team.promotion}</td>
+    <td>${team.members}</td>
+    <td>${team.name}</td>
+    <td>
+    <a href="${url}" target="_blank">${displayUrl}</a>
     </td>
     <td>
-      <input value="${team.members}" type="text" name="members" placeholder="Enter Members" required />
-    </td>
-    <td>
-      <input value="${team.name}" type="text" name="name" placeholder="Enter Name" required />
-    </td>
-    <td>
-      <input value="${team.url}" type="text" name="url" placeholder="Enter URL" required />
-    </td>
-    <td>
-    <button type="submit" class="action-btn" title="Save">💾</button>
-    <button type="reset" class="action-btn" title="Cancel">✖</button>
+      <button type="button" data-id="${team.id}" class="action-btn edit-btn">&#9998;</button>
+      <button type="button" data-id="${team.id}" class="action-btn delete-btn">♻</button>
     </td>
     </tr>`;
 }
