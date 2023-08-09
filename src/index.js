@@ -1,6 +1,9 @@
 import "./style.css";
 import { $, mask, sleep, unmask } from "./utilities";
 import { loadTeamsRequest, updateTeamRequest, createTeamRequest, deleteTeamRequest } from "./middleware";
+//import { debounce } from "lodash"; // not ok - is importing all functions
+import debounce from "lodash/debounce";
+
 const form = "#teamsForm";
 let allTeams = [];
 let editId;
@@ -171,12 +174,15 @@ async function removeSelected() {
 function initEvents() {
   $("#removeSelected").addEventListener("click", removeSelected);
 
-  $("#search").addEventListener("input", e => {
-    const search = e.target.value;
-    const teams = filterElements(allTeams, search);
-    console.info("search", search, teams);
-    renderTeams(teams);
-  });
+  $("#search").addEventListener(
+    "input",
+    debounce(e => {
+      const search = e.target.value;
+      const teams = filterElements(allTeams, search);
+      console.info("search", search, teams);
+      renderTeams(teams);
+    }, 200)
+  );
 
   $("#selectAll").addEventListener("input", e => {
     document.querySelectorAll("input[name=selected]").forEach(check => {
