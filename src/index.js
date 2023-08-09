@@ -51,14 +51,16 @@ function getTeamAsHTML(team) {
       <td>${team.name}</td>
       <td>${team.url}</td>
       <td>
-      <button data-id="${team.id}" class="action-btn edit-btn">&#9998;</button>
-      <button data-id="${team.id}" class="action-btn delete-btn">♻</button>
+      <button type="button" data-id="${id}" class="action-btn edit-btn">&#9998;</button>
+      <button type="button" data-id="${id}" class="action-btn delete-btn">♻</button>
     </td>
   </tr>`;
 }
 
 function getTeamAsHTMLInputs(team) {
-  const url = team.url;
+  // const id = team.id;
+  // const url = team.url;
+  const { id, url } = team;
   const displayUrl = url.startsWith("https://github.com/") ? url.substring(19) : url;
   return `<tr>
     <td>
@@ -120,8 +122,8 @@ function getTeamValues(parent) {
   const name = $(`${parent} input[name=name]`).value;
   const url = $(`${parent} input[name=url]`).value;
   const team = {
-    promotion: promotion,
-    members: members,
+    promotion,
+    members,
     name,
     url
   };
