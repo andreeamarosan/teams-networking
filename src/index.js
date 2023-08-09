@@ -1,45 +1,54 @@
 import "./style.css";
 import { $, mask, sleep, unmask } from "./utilities";
 import { loadTeamsRequest, updateTeamRequest, createTeamRequest, deleteTeamRequest } from "./middleware";
-
 const form = "#teamsForm";
-
 let allTeams = [];
 let editId;
-
-function getTeamAsHTMLInputs({ promotion, members, name, url }) {
+function getTeamAsHTML(team) {
+  // const id = team.id;
+  // const url = team.url;
+  const { id, url } = team;
+  const displayUrl = url.startsWith("https://github.com/") ? url.substring(19) : url;
   return `<tr>
-      <td><input value="${promotion}" type="text" name="promotion" placeholder="Enter Promotion" required/></td>
-      <td><input value="${members}" type="text" name="members" placeholder="Enter Members" required /></td>
-      <td><input value="${name}" type="text" name="name" placeholder="Enter Name" required /></td>
-      <td><input value="${url}" type="text" name="url" placeholder="Enter URL" required /></td>
-      <td>
+    <td style="text-align: center">
+      <input type="checkbox" name="selected" value="${id}" />
+    </td>
+    <td>${team.promotion}</td>
+    <td>${team.members}</td>
+    <td>${team.name}</td>
+    <td>
+      <a href="${url}" target="_blank">${displayUrl}</a>
+    </td>
+    <td>
       <button type="button" data-id="${id}" class="action-btn edit-btn">&#9998;</button>
       <button type="button" data-id="${id}" class="action-btn delete-btn">♻</button>
     </td>
   </tr>`;
 }
 
-function getTeamAsHTMLInputs(team) {
-  // const id = team.id;
-  // const url = team.url;
-  const { id, url } = team;
-  const displayUrl = url.startsWith("https://github.com/") ? url.substring(19) : url;
+function getTeamAsHTMLInputs({ id, promotion, members, name, url }) {
   return `<tr>
-    <td>
-    <td>${team.promotion}</td>
-    <td>${team.members}</td>
-    <td>${team.name}</td>
-    <td>
-    <a href="${url}" target="_blank">${displayUrl}</a>
+    <td style="text-align: center">
+      <input type="checkbox" name="selected" value="${id}" />
     </td>
     <td>
-      <button type="button" data-id="${team.id}" class="action-btn edit-btn">&#9998;</button>
-      <button type="button" data-id="${team.id}" class="action-btn delete-btn">♻</button>
+      <input value="${promotion}" type="text" name="promotion" placeholder="Enter Promotion" required/>
     </td>
-    </tr>`;
+    <td>
+      <input value="${members}" type="text" name="members" placeholder="Enter Members" required />
+    </td>
+    <td>
+      <input value="${name}" type="text" name="name" placeholder="Enter Name" required />
+    </td>
+    <td>
+      <input value="${url}" type="text" name="url" placeholder="Enter URL" required />
+    </td>
+    <td>
+      <button type="submit" class="action-btn" title="Save">💾</button>
+      <button type="reset" class="action-btn" title="Cancel">✖</button>
+    </td>
+  </tr>`;
 }
-
 let previewTeams = [];
 function renderTeams(teams, editId) {
   if (!editId && teams === previewTeams) {
@@ -63,14 +72,12 @@ function renderTeams(teams, editId) {
   addTitlesToOverflowCells();
   console.timeEnd("render");
 }
-
 function addTitlesToOverflowCells() {
   const cells = document.querySelectorAll("#teamsTable td");
   cells.forEach(cell => {
     cell.title = cell.offsetWidth < cell.scrollWidth ? cell.textContent : "";
   });
 }
-
 async function loadTeams() {
   mask(form);
   const teams = await loadTeamsRequest();
@@ -92,19 +99,13 @@ function getTeamValues(parent) {
   };
   return team;
 }
-
 async function onSubmit(e) {
   e.preventDefault();
-
   console.warn("update or create?", editId);
-
   const team = getTeamValues(editId ? "tbody" : "tfoot");
-
   mask(form);
-
   if (editId) {
     team.id = editId;
-
     const { success } = await updateTeamRequest(team);
     if (success) {
       allTeams = allTeams.map(t => {
@@ -117,7 +118,6 @@ async function onSubmit(e) {
         }
         return t;
       });
-
       setInputsDisabled(false);
       editId = "";
     }
@@ -126,7 +126,6 @@ async function onSubmit(e) {
     if (success) {
       team.id = id;
       allTeams = [...allTeams, team];
-
       $(form).reset();
     }
   }
@@ -138,16 +137,13 @@ function startEdit(id) {
   console.warn("edit... %o", id, allTeams);
   //const team = allTeams.find(team => team.id === id);
   renderTeams(allTeams, id);
-
   setInputsDisabled(true);
 }
-
 function setInputsDisabled(disabled) {
   document.querySelectorAll("tfoot input, tfoot button").forEach(input => {
     input.disabled = disabled;
   });
 }
-
 function filterElements(teams, search) {
   search = search.toLowerCase();
   return teams.filter(({ promotion, members, name, url }) => {
@@ -160,7 +156,6 @@ function filterElements(teams, search) {
     );
   });
 }
-
 function initEvents() {
   $("#search").addEventListener("input", e => {
     const search = e.target.value;
@@ -179,7 +174,6 @@ function initEvents() {
       editId = "";
     }
   });
-
   $("#teamsTable tbody").addEventListener("click", async e => {
     if (e.target.matches("button.delete-btn")) {
       const id = e.target.dataset.id;
@@ -199,12 +193,10 @@ function initEvents() {
 }
 initEvents();
 loadTeams();
-
 // var p = sleep(5000);
 // p.then(() => {
 //   console.warn("ready");
 // });
 // console.info("after sleep", p);
-
 // const p2 = await sleep(5000);
 // console.info("after sleep2", p2);
