@@ -237,19 +237,11 @@ function initEvents() {
     }
   });
 }
-$("#teamsForm").classList.add("loading-mask");
+mask($("#teamsForm"));
 loadTeams().then(() => {
-  $("#teamsForm").classList.remove("loading-mask");
+  unmask($("#teamsForm"));
 });
 initEvents();
-
-function sleep(ms) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
-}
 
 sleep(5000).then(() => {
   console.warn("ready");
