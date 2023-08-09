@@ -163,6 +163,13 @@ function initEvents() {
     console.info("search", search, teams);
     renderTeams(teams);
   });
+
+  $("#selectAll").addEventListener("input", e => {
+    document.querySelectorAll("input[name=selected]").forEach(check => {
+      check.checked = e.target.checked;
+    });
+  });
+
   $(form).addEventListener("submit", onSubmit);
   $(form).addEventListener("reset", e => {
     console.info("reset", editId);
