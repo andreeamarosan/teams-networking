@@ -1,6 +1,6 @@
 export function loadTeamsRequest() {
   let url = "http://localhost:3000/teams-json";
-  if (window.location.host === "nmatei.github.io") {
+  if (window.location.host === "andreeamarosan.github.io") {
     url = "data/teams.json";
   }
   return fetch(url).then(r => r.json());
